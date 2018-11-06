@@ -14,7 +14,7 @@ var runtimeAllure = new Runtime(allureReporter);
 var find = require("find");
 
 var self = module.exports = {
-    write: function (results, done, directoryPath) {
+    write: function (results, done, directoryPath = path.join(__dirname, '../../')) {
         allureReporter.setOptions(" -o reports/allure-report" || {});
         for (var currentModule in results.modules) {
             module = results.modules[currentModule];
@@ -35,7 +35,7 @@ var self = module.exports = {
             }
 
             if (typeof directoryPath !== 'undefined') {
-                currentTest.tags = self.parseFileForTags(directoryPath + "/tests/" + currentModule + ".js");
+                currentTest.tags = self.parseFileForTags(directoryPath + "src/tests/" + currentModule + ".js");
             }
 
             if (currentTest.skipped === currentTest.tests) {
@@ -118,7 +118,7 @@ var self = module.exports = {
 
             if (currentTest.isFailure) {
                 if (typeof directoryPath !== 'undefined') {
-                    find.file(/\.png$/, directoryPath + "/screenshots/" + results.environment + "/" + currentModule, function (files) {
+                    find.file(/\.png$/, directoryPath + "src/output/reports/screenshots/" + results.environment + "/" + currentModule, function (files) {
                         files.forEach(function (file) {
                             fs.readFile(file, function (err, data) {
                                 allureReporter.addAttachment("screenshots", data, "image/png");
